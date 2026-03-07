@@ -4,6 +4,11 @@
     <ProjectReference Include="..\PlagiarismDetector.Application\PlagiarismDetector.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Minio.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="MongoDB.Driver" Version="3.7.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
