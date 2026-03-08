@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PlagiarismDetector.Application.Interfaces
+namespace PlagiarismDetector.Application.Interfaces;
+public interface IListProcessedFilesUseCase
 {
-    public interface IListProcessedFilesUseCase
-    {
-        Task<IEnumerable<string>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default);
-    }
+    Task<IEnumerable<string>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default);
 }
