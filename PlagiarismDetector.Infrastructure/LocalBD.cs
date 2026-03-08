@@ -27,4 +27,19 @@ public class LocalFileStorageRepository : IStorageRepository
 
         await File.WriteAllTextAsync(filePath, jsonContent, cancellationToken);
     }
+
+    public async Task<IEnumerable<string>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default)
+    {
+        string folderPath = Path.Combine(_baseStoragePath, bucketName);
+
+        if (!Directory.Exists(folderPath))
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        return await Task.Run(() =>
+        {
+            return Directory.GetFiles(folderPath).Select(path => Path.GetFileName(path)!);
+        }, cancellationToken);
+    }
 }

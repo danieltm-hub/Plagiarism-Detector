@@ -22,9 +22,10 @@ builder.Services.AddOpenApiServices();
 string baseStoragePath = builder.Configuration["LocalStorage:BasePath"] 
                          ?? Path.Combine(Path.GetTempPath(), "PlagiarismData");
 
-builder.Services.AddScoped<IStorageRepository>(provider => 
+builder.Services.AddScoped<IStorageRepository>(provider =>
     new LocalFileStorageRepository(baseStoragePath)
 );
+builder.Services.AddScoped<IListProcessedFilesUseCase, ListProcessedFilesUseCase>();
 builder.Services.AddScoped<IProcessFolderUseCase, ProcessFolderUseCase>();
 
 var app = builder.Build();
