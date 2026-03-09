@@ -1,7 +1,11 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using PlagiarismDetector.Domain.Interfaces;
+using PlagiarismDetector.Application.Interfaces;
+using PlagiarismDetector.Application.DTOs;
 
 namespace PlagiarismDetector.Infrastructure;
 
@@ -14,7 +18,7 @@ public class LocalFileStorageRepository : IStorageRepository
         _baseStoragePath = baseStoragePath;
     }
 
-    public async Task UploadFileAsync(string bucketName, string fileName, string jsonContent, CancellationToken cancellationToken = default)
+    public async Task UploadFileAsync(string bucketName, string fileName, FlowGraphs jsonContent, CancellationToken cancellationToken = default)
     {
         string folderPath = Path.Combine(_baseStoragePath, bucketName);
 
@@ -25,21 +29,35 @@ public class LocalFileStorageRepository : IStorageRepository
 
         string filePath = Path.Combine(folderPath, fileName);
 
-        await File.WriteAllTextAsync(filePath, jsonContent, cancellationToken);
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        await using FileStream createStream = File.Create(filePath);
+        await JsonSerializer.SerializeAsync(createStream, jsonContent, options, cancellationToken);
     }
 
-    public async Task<IEnumerable<string>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FlowGraphs>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default)
     {
         string folderPath = Path.Combine(_baseStoragePath, bucketName);
 
         if (!Directory.Exists(folderPath))
         {
-            return Enumerable.Empty<string>();
+            return Enumerable.Empty<FlowGraphs>();
         }
 
         return await Task.Run(() =>
         {
-            return Directory.GetFiles(folderPath).Select(path => Path.GetFileName(path)!);
+            return Directory
+                .GetFiles(folderPath)
+                .Select(path =>
+                {
+                    var content = File.ReadAllText(path);
+                    var graphs = JsonSerializer.Deserialize<FlowGraphs>(content);
+                    return graphs!;
+                });
         }, cancellationToken);
     }
 }

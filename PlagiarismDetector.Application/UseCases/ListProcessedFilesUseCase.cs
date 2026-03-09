@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PlagiarismDetector.Application.DTOs;
 using PlagiarismDetector.Application.Interfaces;
-using PlagiarismDetector.Domain.Interfaces;
 
 namespace PlagiarismDetector.Application.UseCases;
 
@@ -15,7 +15,7 @@ public class ListProcessedFilesUseCase : IListProcessedFilesUseCase
         _storageRepository = storageRepository;
     }
 
-    public async Task<IEnumerable<string>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FlowGraphs>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default)
     {
         return await _storageRepository.ListFilesAsync(bucketName, cancellationToken);
     }

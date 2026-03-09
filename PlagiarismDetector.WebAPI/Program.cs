@@ -1,9 +1,11 @@
 using PlagiarismDetector.WebAPI.Extensions;
 using PlagiarismDetector.Application.Interfaces;
 using PlagiarismDetector.Application.UseCases;
-using PlagiarismDetector.Domain.Interfaces;
 using PlagiarismDetector.Infrastructure;
-using MongoDB.Driver;
+
+using Microsoft.Build.Locator;
+
+MSBuildLocator.RegisterDefaults();
 
 var builder = WebApplication.CreateBuilder(args);
 

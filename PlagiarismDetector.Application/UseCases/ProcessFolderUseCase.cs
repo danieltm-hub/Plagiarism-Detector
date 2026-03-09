@@ -1,5 +1,6 @@
-using PlagiarismDetector.Domain.Interfaces;
 using PlagiarismDetector.Application.Interfaces;
+using PlagiarismDetector.Application.Services;
+using PlagiarismDetector.Domain.Enums;
 
 namespace PlagiarismDetector.Application.UseCases;
 
@@ -14,18 +15,9 @@ public class ProcessFolderUseCase : IProcessFolderUseCase
 
     public async Task ProcessFolderAsync(string folderPath, CancellationToken cancellationToken = default)
     {
-        string[] filenames = new string[0];
+        var storeData = UploadProjectsFolder.ExtractFlowGraphs(folderPath, ImportType.Solution);
 
-        var files = Directory.GetFiles(folderPath);
-        string filename = folderPath.Split("\\").Last();
-
-        foreach (var file in files)
-        {
-            filenames.Append(file.Split("\\").Last());
-        }
-
-        string mockContent = $"content: {string.Join(',', filenames)}";
-
-        await _storageRepository.UploadFileAsync("plagiarism-detector", $"{filename}.json", mockContent);
+        foreach (var toStore in storeData)
+            await _storageRepository.UploadFileAsync("plagiarism-detector", $"{toStore.filename}.json", toStore.flowGraphs);
     }
 }
