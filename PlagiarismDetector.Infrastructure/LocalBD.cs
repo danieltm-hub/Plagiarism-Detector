@@ -54,7 +54,14 @@ public class LocalFileStorageRepository : IStorageRepository
                 .GetFiles(folderPath)
                 .Select(path =>
                 {
+                    if(!Path.IsPathFullyQualified(path))
+                    {
+                        path = Path.GetRelativePath("./", path);
+                    }
                     var content = File.ReadAllText(path);
+
+                    Console.WriteLine(path);
+
                     var graphs = JsonSerializer.Deserialize<FlowGraphs>(content);
                     return graphs!;
                 });
