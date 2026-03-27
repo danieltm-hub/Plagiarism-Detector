@@ -39,13 +39,13 @@ public class LocalFileStorageRepository : IStorageRepository
         await JsonSerializer.SerializeAsync(createStream, jsonContent, options, cancellationToken);
     }
 
-    public async Task<IEnumerable<FlowGraphs>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FlowGraphResponse>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default)
     {
         string folderPath = Path.Combine(_baseStoragePath, bucketName);
 
         if (!Directory.Exists(folderPath))
         {
-            return Enumerable.Empty<FlowGraphs>();
+            return Enumerable.Empty<FlowGraphResponse>();
         }
 
         return await Task.Run(() =>
@@ -63,7 +63,11 @@ public class LocalFileStorageRepository : IStorageRepository
                     Console.WriteLine(path);
 
                     var graphs = JsonSerializer.Deserialize<FlowGraphs>(content);
-                    return graphs!;
+                    return new FlowGraphResponse 
+                    { 
+                        filename = Path.GetFileName(path), 
+                        flowGraphs = graphs! 
+                    };
                 });
         }, cancellationToken);
     }

@@ -6,5 +6,5 @@ public interface IStorageRepository
 {
     Task UploadFileAsync(string bucketName, string fileName, FlowGraphs content, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<FlowGraphs>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default);
+    Task<IEnumerable<FlowGraphResponse>> ListFilesAsync(string bucketName, CancellationToken cancellationToken = default);
 }

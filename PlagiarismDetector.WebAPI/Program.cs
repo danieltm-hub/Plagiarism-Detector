@@ -29,6 +29,7 @@ builder.Services.AddScoped<IStorageRepository>(provider =>
 );
 builder.Services.AddScoped<IListProcessedFilesUseCase, ListProcessedFilesUseCase>();
 builder.Services.AddScoped<IProcessFolderUseCase, ProcessFolderUseCase>();
+builder.Services.AddScoped<IGetRandomPairsUseCase, GetRandomPairsUseCase>();
 
 var app = builder.Build();
 

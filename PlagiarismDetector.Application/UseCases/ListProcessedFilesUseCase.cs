@@ -15,7 +15,7 @@ public class ListProcessedFilesUseCase : IListProcessedFilesUseCase
         _storageRepository = storageRepository;
     }
 
-    public async Task<IEnumerable<FlowGraphs>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FlowGraphResponse>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default)
     {
         return await _storageRepository.ListFilesAsync(bucketName, cancellationToken);
     }

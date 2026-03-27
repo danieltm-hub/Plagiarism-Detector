@@ -10,11 +10,13 @@ public class ProcessingController : ControllerBase
 {
     private readonly IProcessFolderUseCase _processFolderUseCase;
     private readonly IListProcessedFilesUseCase _listProcessedFilesUseCase;
+    private readonly IGetRandomPairsUseCase _getRandomPairsUseCase;
 
-    public ProcessingController(IProcessFolderUseCase processFolderUseCase, IListProcessedFilesUseCase listProcessedFilesUseCase)
+    public ProcessingController(IProcessFolderUseCase processFolderUseCase, IListProcessedFilesUseCase listProcessedFilesUseCase, IGetRandomPairsUseCase getRandomPairsUseCase)
     {
         _processFolderUseCase = processFolderUseCase;
         _listProcessedFilesUseCase = listProcessedFilesUseCase;
+        _getRandomPairsUseCase = getRandomPairsUseCase;
     }
 
     [HttpPost("process-folder")]
@@ -58,6 +60,31 @@ public class ProcessingController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, $"Ocurrió un error al listar los archivos: {ex.Message}");
+        }
+    }
+
+    [HttpGet("random-pairs/{bucketName}")]
+    public async Task<IActionResult> GetRandomPairs(string bucketName, [FromQuery] int count = 5, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(bucketName))
+        {
+            return BadRequest("El nombre de la carpeta (bucket) es requerido.");
+        }
+
+        try
+        {
+            var pairs = await _getRandomPairsUseCase.ExecuteAsync(bucketName, count, cancellationToken);
+            
+            return Ok(new 
+            {
+                Bucket = bucketName,
+                TotalPairs = pairs.Count(),
+                Pairs = pairs
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Ocurrió un error al listar los pares: {ex.Message}");
         }
     }
 

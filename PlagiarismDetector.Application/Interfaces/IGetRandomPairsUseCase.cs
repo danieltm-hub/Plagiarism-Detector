@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using PlagiarismDetector.Application.DTOs;
 
 namespace PlagiarismDetector.Application.Interfaces;
-public interface IListProcessedFilesUseCase
+
+public interface IGetRandomPairsUseCase
 {
-    Task<IEnumerable<FlowGraphResponse>> ExecuteAsync(string bucketName, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ProjectPair>> ExecuteAsync(string bucketName, int count = 5, CancellationToken cancellationToken = default);
 }
